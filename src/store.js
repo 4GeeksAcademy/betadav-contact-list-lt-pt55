@@ -10,8 +10,7 @@ export const initialStore = () => {
     ],
     contacts: [
       {
-        name: "David quemado",
-        phone: "7"
+
       }
     ]
   }
@@ -19,15 +18,21 @@ export const initialStore = () => {
 
 export default function storeReducer(store, action = {}) {
   switch (action.type) {
-    case 'add_task':
+    // case 'add_task':
 
-      // const { id,  color } = action.payload
+    //   // const { id,  color } = action.payload
+
+    //   return {
+    //     ...store,
+    //     todos: store.todos.map((todo) => (todo.id === id ? { ...todo, background: color } : todo))
+    //   };
+    case 'get_contacts':
 
       return {
         ...store,
-        todos: store.todos.map((todo) => (todo.id === id ? { ...todo, background: color } : todo))
+        contacts: action.payload,
       };
-    case 'get_agendas':
+    case 'delete_contact':
 
       return {
         ...store,

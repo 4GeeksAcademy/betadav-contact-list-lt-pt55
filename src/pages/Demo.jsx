@@ -1,5 +1,5 @@
 // Import necessary components from react-router-dom and other parts of the application.
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";  // Custom hook for accessing the global state.
 
@@ -7,17 +7,72 @@ export const Demo = () => {
 
   const [agendas, setAgendas] = useState([]);
 
-  function getAgendas() {
+  function createContact() {
+    fetch('https://playground.4geeks.com/contact/agendas/David/contacts', {
+      method: "POST",
+      body: JSON.stringify({
+        "name": "Marta",
+        "phone": "456",
+        "email": "chao@gmail.com",
+        "address": "North Africa 1234"
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(() => {
+        getContacts()
+      })
+  }
+
+  function createAgenda() {
+    fetch('https://playground.4geeks.com/contact/agendas/David', {
+      method: "POST",
+      body: JSON.stringify({}),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(() => {
+        createContact()
+      })
+  }
+
+  function getContacts() {
     fetch('https://playground.4geeks.com/contact/agendas/David/contacts')
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status === 404) {
+          return createAgenda();
+        }
+        return response.json()
+      })
       .then((data) => {
         console.log(data)
         dispatch({
-          type: 'get_agendas',
+          type: 'get_contacts',
           payload: data.contacts
         })
-      });
+      })
+
   }
+
+  function deleteContact(id) {
+    fetch(`https://playground.4geeks.com/contact/agendas/David/contacts/${id}`, {
+      method: "DELETE"
+    })
+      .then((data) => {
+        dispatch({
+          type: 'delete_contact',
+          payload: data.contacts
+        })
+        getContacts();
+      });
+
+  }
+
+  useEffect(() => {
+    getContacts()
+  }, [])
 
   // Access the global state and dispatch function using the useGlobalReducer hook.
   const { store, dispatch } = useGlobalReducer()
@@ -53,56 +108,52 @@ export const Demo = () => {
         {/* Map over the 'todos' array from the store and render each item as a list element */}
         {store && store.contacts?.map((item) => {
           return (
-            <li
-              key={item.id}  // React key for list items.
-              className="list-group-item d-flex justify-content-between"
-              style={{ background: item.background }}>
+            <>
+              <div className="card mb-3" style={{ maxWidth: '540px' }}>
+                <div className="row g-0">
+                  <div className="col-md-4">
+                    <img src="https://picsum.photos/200/300" className="img-fluid rounded-start" alt="..." />
+                  </div>
+                  <div className="col-md-8">
+                    <div className="card-body">
+                      <Link to={"/single/" + item.id}>Link to: {item.slug} </Link>
+                      <h5 className="card-title">Name: {item.name}
+                        <button className="btn btn-warning" onClick={() => deleteContact(item.id)}>Delete</button>
+                      </h5>
+                      <p className="card-text">Address: {item.address}</p>
+                      <p className="card-text">Phone: {item.phone}</p>
+                      <p className="card-text">Email: {item.email}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/*
                 
-                <Link to={"/single/" + item.id}>Link to: {item.slug} </Link>
-                <p>
-                  {item.name}
-                </p>
-                <p>
-                  {item.phone}
-                </p>
+                  <button className="btn btn-danger"
+                    onClick={() => dispatch({
+                      type: "delete_contact",
+                      payload: { contacts: item.id }
+                    })}>
+                    Delete contact
+                  </button>
+              }
 
-              {/* Link to the detail page of this todo. */}
-              
+                <button className="btn btn-success" 
+                  onClick={() => dispatch({
+                    type: "add_task", 
+                    payload: { id: item.id, color: '#ffa500' }
+                  })}>
+                  Change Color
+                </button> */}
 
-              {/* <button className="btn btn-success" 
-                onClick={() => dispatch({
-                  type: "add_task", 
-                  payload: { id: item.id, color: '#ffa500' }
-                })}>
-                Change Color
-              </button> */}
-            </li>
+            </>
           );
         })}
       </ul>
-      <button className="btn btn-danger" onClick={() => getAgendas()}>Get agendas</button>
+      <button className="btn btn-success" onClick={() => createContact()}>New contact</button>
 
-      {/* <div className="card mb-3" style={{maxWidth: '540px'}}>
-				<div className="row g-0">
-					<div className="col-md-4">
-						<img src="https://picsum.photos/200/300" className="img-fluid rounded-start" alt="..."/>
-					</div>
-					<div className="col-md-8">
-						<div className="card-body">
-							<h5 className="card-title">Card title</h5>
-							<p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-							<p className="card-text"><small className="text-muted">Last updated 3 mins ago</small></p>
-              <button className="btn btn-success" 
-                onClick={() => dispatch({
-                  type: "add_task", 
-                  payload: { id: item.id, color: '#ffa500' }
-                })}>
-                Change Color
-              </button>
-						</div>
-					</div>
-				</div>
-			</div> */}
+
+
 
       <Link to="/">
         <button className="btn btn-primary">Back home</button>
