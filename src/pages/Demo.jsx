@@ -78,7 +78,14 @@ export const Demo = () => {
   const { store, dispatch } = useGlobalReducer()
 
   return (
+
     <div className="container">
+      <div className="d-flex flex-row-reverse my-3">
+        <Link to="/">
+          <button className="btn btn-primary">Add New Contact</button>
+        </Link>
+      </div>
+
       <ul className="list-group">
         {/* Map over the 'todos' array from the store and render each item as a list element */}
         {store && store.todos?.map((item) => {
@@ -117,12 +124,12 @@ export const Demo = () => {
                   <div className="col-md-8">
                     <div className="card-body">
                       <Link to={"/single/" + item.id}>Link to: {item.slug} </Link>
-                      <h5 className="card-title">Name: {item.name}
-                        <button className="btn btn-warning" onClick={() => deleteContact(item.id)}>Delete</button>
-                      </h5>
+                      <h5 className="card-title">Name: {item.name}</h5>
                       <p className="card-text">Address: {item.address}</p>
                       <p className="card-text">Phone: {item.phone}</p>
                       <p className="card-text">Email: {item.email}</p>
+                      <button className="btn btn-success" onClick={() => createContact()}>New contact</button>
+                      <button className="btn btn-warning" onClick={() => deleteContact(item.id)}>Delete</button>
                     </div>
                   </div>
                 </div>
@@ -150,14 +157,7 @@ export const Demo = () => {
           );
         })}
       </ul>
-      <button className="btn btn-success" onClick={() => createContact()}>New contact</button>
 
-
-
-
-      <Link to="/">
-        <button className="btn btn-primary">Back home</button>
-      </Link>
     </div>
   );
 };
