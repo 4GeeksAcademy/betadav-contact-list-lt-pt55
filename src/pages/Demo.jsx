@@ -5,26 +5,6 @@ import useGlobalReducer from "../hooks/useGlobalReducer";  // Custom hook for ac
 
 export const Demo = () => {
 
-  const [agendas, setAgendas] = useState([]);
-
-  function createContact() {
-    fetch('https://playground.4geeks.com/contact/agendas/David/contacts', {
-      method: "POST",
-      body: JSON.stringify({
-        "name": "Marta",
-        "phone": "456",
-        "email": "chao@gmail.com",
-        "address": "North Africa 1234"
-      }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(() => {
-        getContacts()
-      })
-  }
-
   function createAgenda() {
     fetch('https://playground.4geeks.com/contact/agendas/David', {
       method: "POST",
@@ -43,11 +23,11 @@ export const Demo = () => {
       .then((response) => {
         if (response.status === 404) {
           return createAgenda();
+
         }
         return response.json()
       })
       .then((data) => {
-        console.log(data)
         dispatch({
           type: 'get_contacts',
           payload: data.contacts
@@ -81,79 +61,32 @@ export const Demo = () => {
 
     <div className="container">
       <div className="d-flex flex-row-reverse my-3">
-        <Link to="/">
+        <Link to="/addNewUser">
           <button className="btn btn-primary">Add New Contact</button>
         </Link>
       </div>
 
       <ul className="list-group">
         {/* Map over the 'todos' array from the store and render each item as a list element */}
-        {store && store.todos?.map((item) => {
+        {store && store.contacts?.map((contact) => {
           return (
-            <li
-              key={item.id}  // React key for list items.
-              className="list-group-item d-flex justify-content-between"
-              style={{ background: item.background }}>
-
-              {/* Link to the detail page of this todo. */}
-              <Link to={"/single/" + item.id}>Link to: {item.title} </Link>
-
-              <p>Open file ./store.js to see the global store that contains and updates the list of colors</p>
-
-              <button className="btn btn-success"
-                onClick={() => dispatch({
-                  type: "add_task",
-                  payload: { id: item.id, color: '#ffa500' }
-                })}>
-                Change Color
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-      <ul className="list-group">
-        {/* Map over the 'todos' array from the store and render each item as a list element */}
-        {store && store.contacts?.map((item) => {
-          return (
-            <>
-              <div className="card mb-3" style={{ maxWidth: '540px' }}>
-                <div className="row g-0">
-                  <div className="col-md-4">
-                    <img src="https://picsum.photos/200/300" className="img-fluid rounded-start" alt="..." />
-                  </div>
-                  <div className="col-md-8">
-                    <div className="card-body">
-                      <Link to={"/single/" + item.id}>Link to: {item.slug} </Link>
-                      <h5 className="card-title">Name: {item.name}</h5>
-                      <p className="card-text">Address: {item.address}</p>
-                      <p className="card-text">Phone: {item.phone}</p>
-                      <p className="card-text">Email: {item.email}</p>
-                      <button className="btn btn-success" onClick={() => createContact()}>New contact</button>
-                      <button className="btn btn-warning" onClick={() => deleteContact(item.id)}>Delete</button>
-                    </div>
-                  </div>
+            <div className="card mb-3" key={contact.id}>
+              <div className="row">
+                <div className="col-2 m-2 d-flex justify-content-center">
+                  <img src="https://picsum.photos/100/100" className="img-fluid rounded-circle" alt="..." />
+                </div>
+                <div className="col-6 d-flex row">
+                  <h5><Link to={"/single/" + contact.id}> {contact.name} </Link></h5>
+                  <p><i className="fa-solid fa-location-dot"></i> {contact.address}</p>
+                  <p><i className="fa-solid fa-phone-flip"></i> {contact.phone}</p>
+                  <p><i className="fa-solid fa-envelope"></i> {contact.email}</p>
+                </div>
+                <div className="col-4 d-flex align-items-start justify-content-end">
+                  <button className="btn"><i className="fa-solid fa-pencil"></i></button>
+                  <button className="btn" onClick={() => deleteContact(contact.id)}><i className="fa-solid fa-trash-can"></i></button>
                 </div>
               </div>
-              {/*
-                
-                  <button className="btn btn-danger"
-                    onClick={() => dispatch({
-                      type: "delete_contact",
-                      payload: { contacts: item.id }
-                    })}>
-                    Delete contact
-                  </button>
-              }
-
-                <button className="btn btn-success" 
-                  onClick={() => dispatch({
-                    type: "add_task", 
-                    payload: { id: item.id, color: '#ffa500' }
-                  })}>
-                  Change Color
-                </button> */}
-
-            </>
+            </div>
           );
         })}
       </ul>

@@ -8,11 +8,7 @@ export const initialStore = () => {
         background: null,
       }
     ],
-    contacts: [
-      {
-
-      }
-    ]
+    contacts: []
   }
 }
 
@@ -38,6 +34,9 @@ export default function storeReducer(store, action = {}) {
         ...store,
         contacts: action.payload,
       };
+
+      // case 'create_contact' :
+
     default:
       throw Error('Unknown action.');
   }

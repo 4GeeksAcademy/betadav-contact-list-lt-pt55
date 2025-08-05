@@ -25,7 +25,7 @@ export const Home = () => {
 					<label htmlFor="formGroupExampleInput2" className="form-label">Address</label>
 					<input type="text" className="form-control" id="formGroupExampleInput2" placeholder="Enter address" />
 				</div>
-				<button className="col rounded btn btn-primary"  type="button">Save</button>
+				<button className="col rounded btn btn-primary" onClick={() => createContact()} type="button">Save</button>
 				<Link to="/demo">
 					<span className="mb-0">or get back to home</span>
 				</Link>
