@@ -14,7 +14,7 @@ export const Demo = () => {
       }
     })
       .then(() => {
-        createContact()
+        console.log('se creo el usuario')
       })
   }
 
@@ -47,7 +47,6 @@ export const Demo = () => {
         })
         getContacts();
       });
-
   }
 
   useEffect(() => {
@@ -61,7 +60,7 @@ export const Demo = () => {
 
     <div className="container">
       <div className="d-flex flex-row-reverse my-3">
-        <Link to="/addNewUser">
+        <Link to="/AddNewContact">
           <button className="btn btn-primary">Add New Contact</button>
         </Link>
       </div>
@@ -82,7 +81,9 @@ export const Demo = () => {
                   <p><i className="fa-solid fa-envelope"></i> {contact.email}</p>
                 </div>
                 <div className="col-4 d-flex align-items-start justify-content-end">
-                  <button className="btn"><i className="fa-solid fa-pencil"></i></button>
+                  <Link to={`/editContacts/${contact.id}`}>
+                    <button className="btn"><i className="fa-solid fa-pencil"></i></button>
+                  </Link>
                   <button className="btn" onClick={() => deleteContact(contact.id)}><i className="fa-solid fa-trash-can"></i></button>
                 </div>
               </div>
